@@ -1,41 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Multi‐Attachment Viewer</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    #attachments img {
-      max-width: 100%;
-      margin: 10px 0;
-      display: block;
-    }
-    #attachments p { color: #666; }
-  </style>
-</head>
-<body>
-  <h1>Attachments</h1>
-  <div id="attachments"><p>Loading attachments…</p></div>
-  <script>
-    (function(){
-      var params    = new URLSearchParams(location.search);
-      var links     = params.getAll('u');
-      var container = document.getElementById('attachments');
-      container.innerHTML = '';
-      if (!links.length) {
-        container.innerHTML = '<p>No attachments found</p>';
-        return;
-      }
-      links.forEach(function(url){
-        var img    = document.createElement('img');
-        img.src    = url;
-        var anchor = document.createElement('a');
-        anchor.href   = url;
-        anchor.target = '_blank';
-        anchor.appendChild(img);
-        container.appendChild(anchor);
-      });
-    })();
-  </script>
-</body>
-</html>
+<h1 id="title">Attachments</h1>
+<div id="attachments"><p>Loading attachments…</p></div>
+
+<script>
+(function () {
+  const params = new URLSearchParams(location.search);
+  const title = params.get('t') || params.get('title');
+  const titleEl = document.getElementById('title');
+  if (title) {
+    titleEl.textContent = title;          // safe, no HTML
+    document.title = title + ' | Attachments';
+  }
+
+  const links = params.getAll('u');
+  const container = document.getElementById('attachments');
+  container.innerHTML = '';
+  if (!links.length) {
+    container.innerHTML = '<p>No attachments found</p>';
+    return;
+  }
+  links.forEach(u => {
+    const a = document.createElement('a');
+    a.href = u; a.target = '_blank';
+    const img = document.createElement('img');
+    img.src = u; img.style.maxWidth = '100%'; img.style.margin = '10px 0';
+    a.appendChild(img);
+    container.appendChild(a);
+  });
+})();
+</script>
