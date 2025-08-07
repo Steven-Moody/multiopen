@@ -1,30 +1,55 @@
-<h1 id="title">Attachments</h1>
-<div id="attachments"><p>Loading attachments…</p></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attachments</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    h1 { font-size: 1.25rem; margin: 0 0 12px 0; white-space: pre-wrap; }
+    #attachments img { max-width: 100%; display: block; margin: 10px 0; }
+    #attachments p { color: #666; }
+  </style>
+</head>
+<body>
+  <h1 id="title">Attachments</h1>
+  <div id="attachments"><p>Loading attachments…</p></div>
 
-<script>
-(function () {
-  const params = new URLSearchParams(location.search);
-  const title = params.get('t') || params.get('title');
-  const titleEl = document.getElementById('title');
-  if (title) {
-    titleEl.textContent = title;          // safe, no HTML
-    document.title = title + ' | Attachments';
-  }
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
 
-  const links = params.getAll('u');
-  const container = document.getElementById('attachments');
-  container.innerHTML = '';
-  if (!links.length) {
-    container.innerHTML = '<p>No attachments found</p>';
-    return;
-  }
-  links.forEach(u => {
-    const a = document.createElement('a');
-    a.href = u; a.target = '_blank';
-    const img = document.createElement('img');
-    img.src = u; img.style.maxWidth = '100%'; img.style.margin = '10px 0';
-    a.appendChild(img);
-    container.appendChild(a);
-  });
-})();
-</script>
+      // Title from ?t= (or ?title=). Newlines are handled via white-space: pre-wrap
+      const title = params.get('t') || params.get('title');
+      if (title) {
+        document.getElementById('title').textContent = title;
+        document.title = title + ' | Attachments';
+      }
+
+      // All attachment URLs from repeated ?u=
+      const links = params.getAll('u');
+      const container = document.getElementById('attachments');
+      container.innerHTML = '';
+
+      if (!links.length) {
+        container.innerHTML = '<p>No attachments found</p>';
+        return;
+      }
+
+      links.forEach(function (url) {
+        // clickable image that opens in a new tab
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = '';
+
+        a.appendChild(img);
+        container.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>
